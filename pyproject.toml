@@ -8,7 +8,10 @@ packages = [{include = "wire_service"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-SQLAlchemy = "^1.4.32"
+dynaconf = "^3.1.7"
+psycopg2-binary = "^2.9.3"
+strawberry-graphql = {extras = ["debug-server"], version = "^0.103.9"}
+SQLAlchemy = {extras = ["mypy"], version = "^1.4.32"}
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
@@ -20,3 +23,8 @@ alembic = "^1.7.6"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+plugins = "sqlalchemy.ext.mypy.plugin,strawberry.ext.mypy_plugin"
+files = "wire_service,alembic"
+ignore_missing_imports = true
