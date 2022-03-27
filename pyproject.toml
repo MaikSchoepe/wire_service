@@ -10,8 +10,9 @@ packages = [{include = "wire_service"}]
 python = "^3.8"
 dynaconf = "^3.1.7"
 psycopg2-binary = "^2.9.3"
-strawberry-graphql = {extras = ["debug-server"], version = "^0.103.9"}
+strawberry-graphql = {extras = ["asgi"], version = "^0.103.9"}
 SQLAlchemy = {extras = ["mypy"], version = "^1.4.32"}
+uvicorn = {extras = ["standard"], version = "^0.17.6"}
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"

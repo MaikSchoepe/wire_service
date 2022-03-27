@@ -10,9 +10,9 @@ class AreaDb(Base):
 
     id = Column(Integer, primary_key=True)
 
-    short_name = Column(String(10), unique=True)
-    name = Column(String(128))
-    description = Column(UnicodeText)
+    short_name = Column(String(10), nullable=False, unique=True)
+    name = Column(String(128), nullable=False)
+    description = Column(UnicodeText, nullable=False)
 
     places = relationship(
         PlaceDb, backref="area", cascade="all, delete-orphan", uselist=True

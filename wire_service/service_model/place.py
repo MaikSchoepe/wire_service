@@ -1,25 +1,19 @@
-import typing
-
 import strawberry
 
-from wire_service.db_model.area import AreaDb
-
-from .place import Place
+from wire_service.db_model.place import PlaceDb
 
 
 @strawberry.type
-class Area:
+class Place:
     # @classmethod
-    # def marshal(cls, model: AreaDb) -> "Area":
+    # def marshal(cls, model: PlaceDb) -> "Place":
     #     return cls(
     #         id=strawberry.ID(str(model.id)),
     #         name=model.name or "",
     #         short_name=model.short_name or "",
     #         description=model.description or "",
-    #         # places=map(Place.marshal, model.places),
     #     )
-
-    def __init__(self, model: AreaDb):
+    def __init__(self, model: PlaceDb):
         self._model = model
 
     @strawberry.field
@@ -30,10 +24,5 @@ class Area:
     def name(self) -> str:
         return self._model.name or ""
 
-    # name: str
     # short_name: str
     # description: str
-
-    @strawberry.field
-    def places(self) -> typing.List[Place]:
-        return list(map(Place, self._model.places))
