@@ -29,3 +29,8 @@ build-backend = "poetry.core.masonry.api"
 plugins = "sqlalchemy.ext.mypy.plugin,strawberry.ext.mypy_plugin"
 files = "wire_service,alembic"
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]

@@ -4,3 +4,6 @@ DB_HOST = "localhost"
 DB_NAME = "wiring"
 
 DB_PATH = "@format postgresql://{this.DB_USER}:{this.DB_PASS}@{this.DB_HOST}/{this.DB_NAME}"
+
+[testing]
+DB_NAME = "wiring_unittest"
