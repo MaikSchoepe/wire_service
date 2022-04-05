@@ -31,8 +31,5 @@ def ensure_db_exists(set_test_settings):
 
     con.close()
 
-    Base.metadata.create_all(DbConnection.engine)
-
-    yield
-
     Base.metadata.drop_all(DbConnection.engine)
+    Base.metadata.create_all(DbConnection.engine)
