@@ -9,16 +9,6 @@ from .place import Place
 
 @strawberry.type
 class Area:
-    # @classmethod
-    # def marshal(cls, model: AreaDb) -> "Area":
-    #     return cls(
-    #         id=strawberry.ID(str(model.id)),
-    #         name=model.name or "",
-    #         short_name=model.short_name or "",
-    #         description=model.description or "",
-    #         # places=map(Place.marshal, model.places),
-    #     )
-
     def __init__(self, model: AreaDb):
         self._model = model
 
@@ -30,9 +20,13 @@ class Area:
     def name(self) -> str:
         return self._model.name or ""
 
-    # name: str
-    # short_name: str
-    # description: str
+    @strawberry.field
+    def short_name(self) -> str:
+        return self._model.short_name or ""
+
+    @strawberry.field
+    def description(self) -> str:
+        return self._model.description or ""
 
     @strawberry.field
     def places(self) -> typing.List[Place]:

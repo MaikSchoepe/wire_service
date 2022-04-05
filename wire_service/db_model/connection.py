@@ -1,6 +1,19 @@
-from dynaconf import settings
+from functools import cached_property
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine(settings.DB_PATH, echo=True, future=True)
-Session = sessionmaker(engine)
+from wire_service.settings import settings
+
+
+class _DbConnection:
+    @cached_property
+    def engine(self):
+        return create_engine(settings.DB_PATH, echo=True, future=True)
+
+    @cached_property
+    def Session(self):
+        return sessionmaker(self.engine)
+
+
+DbConnection = _DbConnection()

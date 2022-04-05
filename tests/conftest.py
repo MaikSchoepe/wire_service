@@ -1,7 +1,10 @@
 import psycopg2
 import pytest
-from dynaconf import settings
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+from wire_service.db_model import Base
+from wire_service.db_model.connection import DbConnection
+from wire_service.settings import settings
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -27,3 +30,9 @@ def ensure_db_exists(set_test_settings):
         cursor.execute(f"CREATE DATABASE {settings.DB_NAME};")
 
     con.close()
+
+    Base.metadata.create_all(DbConnection.engine)
+
+    yield
+
+    Base.metadata.drop_all(DbConnection.engine)

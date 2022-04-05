@@ -1,10 +1,10 @@
 from logging.config import fileConfig
 
-from dynaconf import settings  # type: ignore
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from wire_service.db_model import Base
+from wire_service.settings import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
