@@ -48,7 +48,7 @@ class _TestPlaceHandler:
     async def get_last_test_data(self) -> dict:
         return {
             "areaId": await self.get_test_area_id(),
-            "shortName": f"TA{self.place_count}",
+            "shortName": f"TP{self.place_count}",
             "name": f"Test Place {self.place_count}",
             "description": f"This is sample place number {self.place_count}",
         }
@@ -56,7 +56,7 @@ class _TestPlaceHandler:
     def get_last_test_data_sync(self) -> dict:
         return {
             "areaId": self._area_id,
-            "shortName": f"TA{self.place_count}",
+            "shortName": f"TP{self.place_count}",
             "name": f"Test Place {self.place_count}",
             "description": f"This is sample place number {self.place_count}",
         }
