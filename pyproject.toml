@@ -31,6 +31,7 @@ build-backend = "poetry.core.masonry.api"
 plugins = "sqlalchemy.ext.mypy.plugin,strawberry.ext.mypy_plugin"
 files = "wire_service,alembic"
 ignore_missing_imports = true
+python_version = "3.8"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
