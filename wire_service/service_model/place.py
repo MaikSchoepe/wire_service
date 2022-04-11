@@ -13,6 +13,10 @@ class Place:
         return strawberry.ID(str(self._model.id))
 
     @strawberry.field
+    def area_id(self) -> strawberry.ID:
+        return strawberry.ID(str(self._model.area_id))
+
+    @strawberry.field
     def name(self) -> str:
         return self._model.name or ""
 

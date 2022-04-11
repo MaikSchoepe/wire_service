@@ -31,7 +31,7 @@ GET_AREA = """
 """
 
 
-class _TestAreaCreator:
+class _TestAreaHandler:
     def __init__(self) -> None:
         self.area_count = 0
 
@@ -56,7 +56,7 @@ class _TestAreaCreator:
         )
 
 
-TestAreaHandler = _TestAreaCreator()
+TestAreaHandler = _TestAreaHandler()
 
 
 @pytest.mark.asyncio
