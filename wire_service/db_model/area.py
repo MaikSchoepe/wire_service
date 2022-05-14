@@ -8,14 +8,18 @@ from .place import PlaceDb
 class AreaDb(Base):
     __tablename__ = "areas"
 
-    id = Column(Integer, primary_key=True)
+    id: int = Column(Integer, primary_key=True)
 
-    short_name = Column(String(10), nullable=False, unique=True)
-    name = Column(String(128), nullable=False)
-    description = Column(UnicodeText, nullable=False)
+    short_name: str = Column(String(10), nullable=False, unique=True)
+    name: str = Column(String(128), nullable=False)
+    description: str = Column(UnicodeText, nullable=False)
 
     places = relationship(
-        PlaceDb, backref="area", cascade="all, delete-orphan", uselist=True
+        PlaceDb,
+        backref="area",
+        cascade="all, delete-orphan",
+        uselist=True,
+        enable_typechecks=False,
     )
 
     def __repr__(self):

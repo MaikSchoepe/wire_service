@@ -48,15 +48,19 @@ class AreaQuery:
         return Area(get_by_id(info, AreaDb, id))
 
 
+@strawberry.input
+class AreaInput(AreaDb):
+    short_name: str  # type: ignore
+    name: str  # type: ignore
+    description: str  # type: ignore
+
+
 @strawberry.type
 class AreaMutation:
     @strawberry.mutation
-    def add_area(
-        self, short_name: str, name: str, description: str, info: Info
-    ) -> Area:
+    def add_area(self, new_area: AreaInput, info: Info) -> Area:
         s = info.context["session"]
         with s.begin():
-            new_area = AreaDb(short_name=short_name, name=name, description=description)
             logging.info(f"adding area {new_area}")
             s.add(new_area)
         return Area(new_area)

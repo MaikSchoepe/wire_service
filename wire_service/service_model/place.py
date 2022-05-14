@@ -36,6 +36,13 @@ class Place:
         return self._model.description or ""
 
 
+@strawberry.input
+class PlaceInput(PlaceDb):
+    short_name: str  # type: ignore
+    name: str  # type: ignore
+    description: str  # type: ignore
+
+
 @strawberry.type
 class PlaceQuery:
     @strawberry.field
@@ -53,18 +60,11 @@ class PlaceMutation:
     def add_place(
         self,
         area_id: strawberry.ID,
-        short_name: str,
-        name: str,
-        description: str,
+        new_place: PlaceInput,
         info: Info,
     ) -> Place:
         with info.context["session"].begin():
-            if (area := get_by_id(info, AreaDb, area_id)) is None:
-                raise Exception(f"Area with ID {id} not found")
-
-            new_place = PlaceDb(
-                short_name=short_name, name=name, description=description
-            )
+            area = get_by_id(info, AreaDb, area_id)
             logging.info(f"adding place {new_place}")
             area.places.append(new_place)
 

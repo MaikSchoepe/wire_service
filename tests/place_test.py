@@ -6,7 +6,7 @@ from wire_service.app import schema
 
 CREATE_PLACE = """
     mutation CreateTestPlace($areaId: ID!, $shortName: String!, $name: String!, $description: String!) {
-        addPlace(areaId: $areaId, shortName: $shortName, name: $name, description: $description) {
+        addPlace(areaId: $areaId, newPlace: {shortName: $shortName, name: $name, description: $description}) {
             areaId,
             id,
             shortName,

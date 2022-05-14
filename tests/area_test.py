@@ -5,7 +5,7 @@ from wire_service.app import schema
 
 CREATE_AREA = """
     mutation CreateTestArea($shortName: String!, $name: String!, $description: String!) {
-        addArea(shortName: $shortName, name: $name, description: $description) {
+        addArea(newArea: {shortName: $shortName, name: $name, description: $description}) {
             id,
             shortName,
             name,

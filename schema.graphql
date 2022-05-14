@@ -1,0 +1,39 @@
+type Area {
+  id: ID!
+  name: String!
+  shortName: String!
+  description: String!
+  places: [Place!]!
+}
+
+input AreaInput {
+  shortName: String! = "AreaInput.short_name"
+  name: String! = "AreaInput.name"
+  description: String! = "AreaInput.description"
+}
+
+type Mutation {
+  addArea(newArea: AreaInput!): Area!
+  addPlace(areaId: ID!, newPlace: PlaceInput!): Place!
+}
+
+type Place {
+  id: ID!
+  areaId: ID!
+  name: String!
+  shortName: String!
+  description: String!
+}
+
+input PlaceInput {
+  shortName: String! = "PlaceInput.short_name"
+  name: String! = "PlaceInput.name"
+  description: String! = "PlaceInput.description"
+}
+
+type Query {
+  areas: [Area!]!
+  area(id: ID!): Area!
+  places: [Place!]!
+  place(id: ID!): Place!
+}
