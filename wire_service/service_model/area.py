@@ -1,8 +1,12 @@
-import typing
+import logging
+from typing import List
 
 import strawberry
+from strawberry.types import Info
 
 from wire_service.db_model.area import AreaDb
+from wire_service.db_model.basic_ops import get_by_id
+from wire_service.service_model.session_extension import db_query
 
 from .place import Place
 
@@ -29,5 +33,30 @@ class Area:
         return self._model.description or ""
 
     @strawberry.field
-    def places(self) -> typing.List[Place]:
+    def places(self) -> List[Place]:
         return list(map(Place, self._model.places))
+
+
+@strawberry.type
+class AreaQuery:
+    @strawberry.field
+    def areas(self, info: Info) -> List[Area]:
+        return list(map(Area, db_query(info)(AreaDb)))
+
+    @strawberry.field
+    def area(self, id: strawberry.ID, info: Info) -> Area:
+        return Area(get_by_id(info, AreaDb, id))
+
+
+@strawberry.type
+class AreaMutation:
+    @strawberry.mutation
+    def add_area(
+        self, short_name: str, name: str, description: str, info: Info
+    ) -> Area:
+        s = info.context["session"]
+        with s.begin():
+            new_area = AreaDb(short_name=short_name, name=name, description=description)
+            logging.info(f"adding area {new_area}")
+            s.add(new_area)
+        return Area(new_area)
