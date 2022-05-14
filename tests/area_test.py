@@ -1,5 +1,4 @@
 import pytest
-from strawberry.types import ExecutionResult
 
 from wire_service.app import schema
 
@@ -32,28 +31,34 @@ GET_AREA = """
 
 
 class _TestAreaHandler:
-    def __init__(self) -> None:
-        self.area_count = 0
+    area_count = 0
 
-    def get_last_test_data(self) -> dict:
+    @property
+    def last_area_data(self) -> dict:
         return {
-            "shortName": f"TA{self.area_count}",
-            "name": f"Test Area {self.area_count}",
-            "description": f"This is sample area number {self.area_count}",
+            "shortName": f"TA{_TestAreaHandler.area_count}",
+            "name": f"Test Area {_TestAreaHandler.area_count}",
+            "description": f"This is sample area number {_TestAreaHandler.area_count}",
         }
 
-    async def create_area(self) -> ExecutionResult:
-        self.area_count += 1
-        return await schema.execute(
-            CREATE_AREA,
-            variable_values=self.get_last_test_data(),
+    async def _execute(self, query: str, args: dict = {}) -> dict:
+        result = await schema.execute(
+            query,
+            variable_values=args,
         )
+        assert result.errors is None
+        assert isinstance(result.data, dict)
+        return result.data
 
-    async def get_area(self, **kwargs) -> ExecutionResult:
-        return await schema.execute(
-            GET_AREA,
-            variable_values=kwargs,
-        )
+    async def create_area(self) -> dict:
+        _TestAreaHandler.area_count += 1
+        return (await self._execute(CREATE_AREA, self.last_area_data))["addArea"]
+
+    async def get_areas(self) -> dict:
+        return (await self._execute(GET_AREAS))["areas"]
+
+    async def get_area(self, **kwargs) -> dict:
+        return (await self._execute(GET_AREA, kwargs))["area"]
 
 
 TestAreaHandler = _TestAreaHandler()
@@ -63,40 +68,34 @@ TestAreaHandler = _TestAreaHandler()
 async def test_create_area():
     result = await TestAreaHandler.create_area()
 
-    assert result.errors is None
-    assert (
-        TestAreaHandler.get_last_test_data().items() <= result.data["addArea"].items()
-    )  # all sent data is there (exclude the id)
+    assert TestAreaHandler.last_area_data.items() <= result.items()
 
 
 @pytest.mark.asyncio
 async def test_get_areas():
-    result = await TestAreaHandler.create_area()
+    await TestAreaHandler.create_area()
 
-    assert result.errors is None
-
-    result = await schema.execute(GET_AREAS)
-    assert result.errors is None
-    assert len(result.data["areas"]) == TestAreaHandler.area_count
+    result = await TestAreaHandler.get_areas()
+    assert len(result) == TestAreaHandler.area_count
 
 
 @pytest.mark.asyncio
 async def test_get_area_by_id():
     result = await TestAreaHandler.create_area()
-    sent_data = TestAreaHandler.get_last_test_data()
+    sent_data = TestAreaHandler.last_area_data
 
-    assert result.errors is None
-
-    area_id = result.data["addArea"]["id"]
+    area_id = result["id"]
 
     result = await TestAreaHandler.get_area(id=area_id)
 
-    assert result.errors is None
-    assert sent_data.items() <= result.data["area"].items()
+    assert sent_data.items() <= result.items()
 
 
 @pytest.mark.asyncio
 async def test_try_get_nonexistent_area():
-    result = await TestAreaHandler.get_area(id=666)
+    result = await schema.execute(
+        GET_AREA,
+        variable_values={"id": 666},
+    )
 
     assert result.errors[0].message == "Area with ID 666 not found"

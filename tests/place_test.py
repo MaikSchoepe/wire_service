@@ -1,7 +1,6 @@
 import pytest
-from strawberry.types import ExecutionResult
 
-from tests.area_test import TestAreaHandler
+from tests.area_test import _TestAreaHandler
 from wire_service.app import schema
 
 CREATE_PLACE = """
@@ -44,20 +43,21 @@ GET_PLACE_PARENT_NAME = """
 """
 
 
-class _TestPlaceHandler:
+class _TestPlaceHandler(_TestAreaHandler):
+    place_count = 0
+
     def __init__(self) -> None:
-        self.place_count = 0
         self._area_id = None
-        self.parent_name = None
+        self.place_parent_name = None
 
     async def get_test_area_id(self):
         if not self._area_id:
-            result = await TestAreaHandler.create_area()
-            self._area_id = result.data["addArea"]["id"]
-            self.parent_name = result.data["addArea"]["name"]
+            result = await self.create_area()
+            self._area_id = result["id"]
+            self.place_parent_name = result["name"]
         return self._area_id
 
-    async def get_last_test_data(self) -> dict:
+    async def last_place_data(self) -> dict:
         return {
             "areaId": await self.get_test_area_id(),
             "shortName": f"TP{self.place_count}",
@@ -65,32 +65,20 @@ class _TestPlaceHandler:
             "description": f"This is sample place number {self.place_count}",
         }
 
-    def get_last_test_data_sync(self) -> dict:
-        return {
-            "areaId": self._area_id,
-            "shortName": f"TP{self.place_count}",
-            "name": f"Test Place {self.place_count}",
-            "description": f"This is sample place number {self.place_count}",
-        }
-
-    async def create_place(self) -> ExecutionResult:
+    async def create_place(self) -> dict:
         self.place_count += 1
-        return await schema.execute(
-            CREATE_PLACE,
-            variable_values=await self.get_last_test_data(),
-        )
+        result = await self._execute(CREATE_PLACE, await self.last_place_data())
+        return result["addPlace"]
 
-    async def get_place(self, **kwargs) -> ExecutionResult:
-        return await schema.execute(
-            GET_PLACE,
-            variable_values=kwargs,
-        )
+    async def get_place(self, **kwargs) -> dict:
+        return (await self._execute(GET_PLACE, kwargs))["place"]
 
-    async def get_place_parent_id(self, **kwargs) -> ExecutionResult:
-        return await schema.execute(
-            GET_PLACE_PARENT_NAME,
-            variable_values=kwargs,
-        )
+    async def get_places(self) -> dict:
+        return (await self._execute(GET_PLACES))["places"]
+
+    async def get_place_parent_id(self, **kwargs) -> dict:
+        data = await self._execute(GET_PLACE_PARENT_NAME, kwargs)
+        return data["place"]["parentArea"]["name"]
 
 
 TestPlaceHandler = _TestPlaceHandler()
@@ -100,42 +88,36 @@ TestPlaceHandler = _TestPlaceHandler()
 async def test_create_place():
     result = await TestPlaceHandler.create_place()
 
-    assert result.errors is None
-    assert (
-        TestPlaceHandler.get_last_test_data_sync().items()
-        <= result.data["addPlace"].items()
-    )  # all sent data is there (exclude the id)
+    last_data = (await TestPlaceHandler.last_place_data()).items()
+    assert last_data <= result.items()  # all sent data is there (exclude the id)
 
 
 @pytest.mark.asyncio
 async def test_get_places():
-    result = await TestPlaceHandler.create_place()
+    await TestPlaceHandler.create_place()
 
-    assert result.errors is None
-
-    result = await schema.execute(GET_PLACES)
-    assert result.errors is None
-    assert len(result.data["places"]) == TestPlaceHandler.place_count
+    result = await TestPlaceHandler.get_places()
+    assert len(result) == TestPlaceHandler.place_count
 
 
 @pytest.mark.asyncio
 async def test_get_place_by_id():
     result = await TestPlaceHandler.create_place()
-    sent_data = TestPlaceHandler.get_last_test_data_sync()
+    sent_data = await TestPlaceHandler.last_place_data()
 
-    assert result.errors is None
-
-    place_id = result.data["addPlace"]["id"]
+    place_id = result["id"]
 
     result = await TestPlaceHandler.get_place(id=place_id)
 
-    assert result.errors is None
-    assert sent_data.items() <= result.data["place"].items()
+    assert sent_data.items() <= result.items()
 
 
 @pytest.mark.asyncio
 async def test_try_get_nonexistent_place():
-    result = await TestPlaceHandler.get_place(id=666)
+    result = await schema.execute(
+        GET_PLACE,
+        variable_values={"id": 666},
+    )
 
     assert result.errors[0].message == "Place with ID 666 not found"
 
@@ -143,14 +125,12 @@ async def test_try_get_nonexistent_place():
 @pytest.mark.asyncio
 async def test_get_place_parent_name():
     result = await TestPlaceHandler.create_place()
-    assert result.errors is None
 
-    parent_name = TestPlaceHandler.parent_name
-    place_id = result.data["addPlace"]["id"]
+    parent_name = TestPlaceHandler.place_parent_name
+    place_id = result["id"]
     assert parent_name
     assert place_id
 
     result = await TestPlaceHandler.get_place_parent_id(id=place_id)
 
-    assert result.errors is None
-    assert result.data["place"]["parentArea"]["name"] == parent_name
+    assert result == parent_name
