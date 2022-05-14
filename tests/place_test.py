@@ -33,16 +33,28 @@ GET_PLACE = """
     }
 """
 
+GET_PLACE_PARENT_NAME = """
+    query GetPlace($id: ID!) {
+        place(id: $id) {
+            parentArea {
+                name
+            }
+        }
+    }
+"""
+
 
 class _TestPlaceHandler:
     def __init__(self) -> None:
         self.place_count = 0
         self._area_id = None
+        self.parent_name = None
 
     async def get_test_area_id(self):
         if not self._area_id:
             result = await TestAreaHandler.create_area()
             self._area_id = result.data["addArea"]["id"]
+            self.parent_name = result.data["addArea"]["name"]
         return self._area_id
 
     async def get_last_test_data(self) -> dict:
@@ -71,6 +83,12 @@ class _TestPlaceHandler:
     async def get_place(self, **kwargs) -> ExecutionResult:
         return await schema.execute(
             GET_PLACE,
+            variable_values=kwargs,
+        )
+
+    async def get_place_parent_id(self, **kwargs) -> ExecutionResult:
+        return await schema.execute(
+            GET_PLACE_PARENT_NAME,
             variable_values=kwargs,
         )
 
@@ -120,3 +138,19 @@ async def test_try_get_nonexistent_place():
     result = await TestPlaceHandler.get_place(id=666)
 
     assert result.errors[0].message == "Place with ID 666 not found"
+
+
+@pytest.mark.asyncio
+async def test_get_place_parent_name():
+    result = await TestPlaceHandler.create_place()
+    assert result.errors is None
+
+    parent_name = TestPlaceHandler.parent_name
+    place_id = result.data["addPlace"]["id"]
+    assert parent_name
+    assert place_id
+
+    result = await TestPlaceHandler.get_place_parent_id(id=place_id)
+
+    assert result.errors is None
+    assert result.data["place"]["parentArea"]["name"] == parent_name

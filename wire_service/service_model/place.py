@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import TYPE_CHECKING, List
 
 import strawberry
 from strawberry.types import Info
@@ -8,6 +8,11 @@ from wire_service.db_model.area import AreaDb
 from wire_service.db_model.basic_ops import get_by_id
 from wire_service.db_model.place import PlaceDb
 from wire_service.service_model.session_extension import db_query
+
+if TYPE_CHECKING:
+    from wire_service.service_model.area import Area
+else:
+    Area = strawberry.LazyType["Area", "wire_service.service_model.area"]
 
 
 @strawberry.type
@@ -20,10 +25,6 @@ class Place:
         return strawberry.ID(str(self._model.id))
 
     @strawberry.field
-    def area_id(self) -> strawberry.ID:
-        return strawberry.ID(str(self._model.area_id))
-
-    @strawberry.field
     def name(self) -> str:
         return self._model.name or ""
 
@@ -34,6 +35,16 @@ class Place:
     @strawberry.field
     def description(self) -> str:
         return self._model.description or ""
+
+    @strawberry.field
+    def area_id(self) -> strawberry.ID:
+        return strawberry.ID(str(self._model.area_id))
+
+    @strawberry.field
+    def parent_area(
+        self,
+    ) -> Area:
+        return Area.resolve_type()(self._model.area)  # type: ignore
 
 
 @strawberry.input
