@@ -1,4 +1,5 @@
 import logging
+from dataclasses import asdict
 from typing import TYPE_CHECKING, List
 
 import strawberry
@@ -35,13 +36,13 @@ class Face(DbProxy):
 
 
 @strawberry.input
-class FaceInput(FaceDb):
-    order_index: int = 0  # type: ignore
-    short_name: str  # type: ignore
-    height: int = 100  # type: ignore
-    width: int = 100  # type: ignore
-    name: str  # type: ignore
-    description: str  # type: ignore
+class FaceInput:
+    order_index: int
+    short_name: str
+    height: int
+    width: int
+    name: str
+    description: str
 
 
 @strawberry.type
@@ -66,7 +67,8 @@ class FaceMutation:
     ) -> Face:
         with info.context["session"].begin():
             place = get_by_id(info, PlaceDb, place_id)
-            logging.info(f"adding face {new_face}")
-            place.faces.append(new_face)
+            new_db_face = FaceDb(**asdict(new_face))
+            logging.info(f"adding face {new_db_face}")
+            place.faces.append(new_db_face)
 
-        return Face.wrap(new_face)
+        return Face.wrap(new_db_face)

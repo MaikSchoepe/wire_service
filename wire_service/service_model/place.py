@@ -1,4 +1,5 @@
 import logging
+from dataclasses import asdict
 from typing import TYPE_CHECKING, List
 
 import strawberry
@@ -33,10 +34,10 @@ class Place(DbProxy):
 
 
 @strawberry.input
-class PlaceInput(PlaceDb):
-    short_name: str  # type: ignore
-    name: str  # type: ignore
-    description: str  # type: ignore
+class PlaceInput:
+    short_name: str
+    name: str
+    description: str
 
 
 @strawberry.type
@@ -61,7 +62,8 @@ class PlaceMutation:
     ) -> Place:
         with info.context["session"].begin():
             area = get_by_id(info, AreaDb, area_id)
-            logging.info(f"adding place {new_place}")
-            area.places.append(new_place)
+            new_db_place = PlaceDb(**asdict(new_place))
+            logging.info(f"adding place {new_db_place}")
+            area.places.append(new_db_place)
 
-        return Place.wrap(new_place)
+        return Place.wrap(new_db_place)

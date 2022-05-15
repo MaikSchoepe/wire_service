@@ -1,4 +1,5 @@
 import logging
+from dataclasses import asdict
 from typing import List
 
 import strawberry
@@ -33,10 +34,10 @@ class AreaQuery:
 
 
 @strawberry.input
-class AreaInput(AreaDb):
-    short_name: str  # type: ignore
-    name: str  # type: ignore
-    description: str  # type: ignore
+class AreaInput:
+    short_name: str
+    name: str
+    description: str
 
 
 @strawberry.type
@@ -45,6 +46,7 @@ class AreaMutation:
     def add_area(self, new_area: AreaInput, info: Info) -> Area:
         s = info.context["session"]
         with s.begin():
-            logging.info(f"adding area {new_area}")
-            s.add(new_area)
-        return Area.wrap(new_area)
+            new_db_area = AreaDb(**asdict(new_area))
+            logging.info(f"adding area {new_db_area}")
+            s.add(new_db_area)
+        return Area.wrap(new_db_area)
