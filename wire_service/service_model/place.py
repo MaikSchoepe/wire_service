@@ -8,6 +8,7 @@ from wire_service.db_model.area import AreaDb
 from wire_service.db_model.basic_ops import get_by_id
 from wire_service.db_model.place import PlaceDb
 from wire_service.service_model.session_extension import db_query
+from wire_service.service_model.wrapper import DbProxy
 
 if TYPE_CHECKING:
     from wire_service.service_model.area import Area
@@ -16,29 +17,13 @@ else:
 
 
 @strawberry.type
-class Place:
-    def __init__(self, model: PlaceDb):
-        self._model = model
+class Place(DbProxy):
+    area_id: strawberry.ID
 
-    @strawberry.field
-    def id(self) -> strawberry.ID:
-        return strawberry.ID(str(self._model.id))
-
-    @strawberry.field
-    def name(self) -> str:
-        return self._model.name
-
-    @strawberry.field
-    def short_name(self) -> str:
-        return self._model.short_name
-
-    @strawberry.field
-    def description(self) -> str:
-        return self._model.description
-
-    @strawberry.field
-    def area_id(self) -> strawberry.ID:
-        return strawberry.ID(str(self._model.area_id))
+    id: strawberry.ID
+    name: str
+    short_name: str
+    description: str
 
     @strawberry.field
     def parent_area(
@@ -58,11 +43,11 @@ class PlaceInput(PlaceDb):
 class PlaceQuery:
     @strawberry.field
     def places(self, info: Info) -> List[Place]:
-        return list(map(Place, db_query(info)(PlaceDb)))
+        return list(map(Place.wrap, db_query(info)(PlaceDb)))
 
     @strawberry.field
     def place(self, id: strawberry.ID, info: Info) -> Place:
-        return Place(get_by_id(info, PlaceDb, id))
+        return Place.wrap(get_by_id(info, PlaceDb, id))
 
 
 @strawberry.type
@@ -79,4 +64,4 @@ class PlaceMutation:
             logging.info(f"adding place {new_place}")
             area.places.append(new_place)
 
-        return Place(new_place)
+        return Place.wrap(new_place)

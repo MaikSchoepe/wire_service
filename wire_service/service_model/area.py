@@ -1,32 +1,14 @@
 import logging
-from typing import Any, List
+from typing import List
 
 import strawberry
 from strawberry.types import Info
 
 from wire_service.db_model.area import AreaDb
 from wire_service.db_model.basic_ops import get_by_id
+from wire_service.service_model.place import Place
 from wire_service.service_model.session_extension import db_query
-
-from .place import Place
-
-
-class DbProxy:
-    def __init__(self):
-        self._model = None
-
-    @classmethod
-    def wrap(cls, model: Any):
-        wrapper = object.__new__(cls)
-        wrapper._model = model
-        return wrapper
-
-    def __getattr__(self, attr):
-        result = getattr(self._model, attr)
-        if isinstance(result, list):
-            return list(map(DbProxy.wrap, result))
-
-        return result
+from wire_service.service_model.wrapper import DbProxy
 
 
 @strawberry.type
