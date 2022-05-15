@@ -4,14 +4,32 @@ from tests.place_test import _TestPlaceHandler
 from wire_service.app import schema
 
 CREATE_FACE = """
-    mutation CreateTestFace($placeId: ID!, $shortName: String!, $name: String!, $description: String!) {
-        addFace(placeId: $placeId, newFace: {shortName: $shortName, name: $name, description: $description}) {
-            placeId,
-            id,
-            shortName,
-            name,
-            description
-        }
+    mutation CreateTestFace(
+            $placeId: ID!,
+            $orderIndex: Int!,
+            $shortName: String!,
+            $name: String!,
+            $height: Int!,
+            $width: Int!,
+            $description: String!
+        ) {
+        addFace(placeId: $placeId, newFace: {
+                orderIndex: $orderIndex,
+                shortName: $shortName,
+                name: $name,
+                height: $height,
+                width: $width,
+                description: $description
+            }) {
+                placeId,
+                id,
+                orderIndex,
+                shortName,
+                height,
+                width,
+                name,
+                description,
+            }
     }
 """
 
@@ -25,8 +43,11 @@ GET_FACE = """
     query GetFace($id: ID!) {
         face(id: $id) {
             placeId,
+            orderIndex,
             name,
             shortName,
+            height,
+            width,
             description
         }
     }
@@ -61,8 +82,11 @@ class _TestFaceHandler(_TestPlaceHandler):
     async def last_face_data(self) -> dict:
         return {
             "placeId": await self.get_test_place_id(),
+            "orderIndex": _TestFaceHandler.face_count,
             "shortName": f"TF{_TestFaceHandler.face_count}",
             "name": f"Test Face {_TestFaceHandler.face_count}",
+            "height": _TestFaceHandler.face_count * 100,
+            "width": _TestFaceHandler.face_count * 200,
             "description": f"This is sample face number {_TestFaceHandler.face_count}",
         }
 

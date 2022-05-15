@@ -29,6 +29,18 @@ class Face:
         return self._model.name or ""
 
     @strawberry.field
+    def order_index(self) -> int:
+        return self._model.order_index or 0
+
+    @strawberry.field
+    def height(self) -> int:
+        return self._model.height or 0
+
+    @strawberry.field
+    def width(self) -> int:
+        return self._model.width or 0
+
+    @strawberry.field
     def short_name(self) -> str:
         return self._model.short_name or ""
 
@@ -49,7 +61,10 @@ class Face:
 
 @strawberry.input
 class FaceInput(FaceDb):
+    order_index: int  # type: ignore
     short_name: str  # type: ignore
+    height: int  # type: ignore
+    width: int  # type: ignore
     name: str  # type: ignore
     description: str  # type: ignore
 
