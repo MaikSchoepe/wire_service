@@ -6,15 +6,14 @@ from wire_service.app import schema
 CREATE_FACE = """
     mutation CreateTestFace(
             $placeId: ID!,
-            $orderIndex: Int!,
+            $addLast: Boolean!,
             $shortName: String!,
             $name: String!,
             $height: Int!,
             $width: Int!,
             $description: String!
         ) {
-        addFace(placeId: $placeId, newFace: {
-                orderIndex: $orderIndex,
+        addFace(placeId: $placeId, addLast: $addLast, newFace: {
                 shortName: $shortName,
                 name: $name,
                 height: $height,
@@ -63,6 +62,14 @@ GET_FACE_PARENT_NAME = """
     }
 """
 
+IGNORED_KEYS = ["addLast", "orderIndex", "id"]
+
+
+def dict_equals(d1, d2):
+    return sorted([(k, v) for k, v in d1.items() if k not in IGNORED_KEYS]) == sorted(
+        [(k, v) for k, v in d2.items() if k not in IGNORED_KEYS]
+    )
+
 
 class _TestFaceHandler(_TestPlaceHandler):
     face_count = 0
@@ -79,10 +86,10 @@ class _TestFaceHandler(_TestPlaceHandler):
             self.face_parent_name = result["name"]
         return self._place_id
 
-    async def last_face_data(self) -> dict:
+    async def last_face_data(self, add_last=True) -> dict:
         return {
             "placeId": await self.get_test_place_id(),
-            "orderIndex": _TestFaceHandler.face_count,
+            "addLast": add_last,
             "shortName": f"TF{_TestFaceHandler.face_count}",
             "name": f"Test Face {_TestFaceHandler.face_count}",
             "height": _TestFaceHandler.face_count * 100,
@@ -90,9 +97,9 @@ class _TestFaceHandler(_TestPlaceHandler):
             "description": f"This is sample face number {_TestFaceHandler.face_count}",
         }
 
-    async def create_face(self) -> dict:
+    async def create_face(self, add_last=True) -> dict:
         _TestFaceHandler.face_count += 1
-        result = await self._execute(CREATE_FACE, await self.last_face_data())
+        result = await self._execute(CREATE_FACE, await self.last_face_data(add_last))
         return result["addFace"]
 
     async def get_face(self, **kwargs) -> dict:
@@ -113,8 +120,8 @@ TestFaceHandler = _TestFaceHandler()
 async def test_create_face():
     result = await TestFaceHandler.create_face()
 
-    last_data = (await TestFaceHandler.last_face_data()).items()
-    assert last_data <= result.items()  # all sent data is there (exclude the id)
+    last_data = await TestFaceHandler.last_face_data()
+    assert dict_equals(last_data, result)  # all sent data is there (exclude the id)
 
 
 @pytest.mark.asyncio
@@ -134,7 +141,7 @@ async def test_get_face_by_id():
 
     result = await TestFaceHandler.get_face(id=face_id)
 
-    assert sent_data.items() <= result.items()
+    assert dict_equals(sent_data, result)
 
 
 @pytest.mark.asyncio
@@ -159,3 +166,15 @@ async def test_get_face_parent_name():
     result = await TestFaceHandler.get_face_parent_id(id=face_id)
 
     assert result == parent_name
+
+
+@pytest.mark.asyncio
+async def test_face_ordering():
+    face1 = await TestFaceHandler.create_face()
+    face2 = await TestFaceHandler.create_face(False)
+    face3 = await TestFaceHandler.create_face()
+    face4 = await TestFaceHandler.create_face(False)
+
+    assert face1["orderIndex"] > face2["orderIndex"]
+    assert face3["orderIndex"] > face1["orderIndex"]
+    assert face4["orderIndex"] < face2["orderIndex"]

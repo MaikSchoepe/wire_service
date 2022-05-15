@@ -1,6 +1,7 @@
 import logging
 from dataclasses import asdict
 from typing import TYPE_CHECKING, List
+from xmlrpc.client import Boolean
 
 import strawberry
 from strawberry.types import Info
@@ -37,7 +38,6 @@ class Face(DbProxy):
 
 @strawberry.input
 class FaceInput:
-    order_index: int
     short_name: str
     height: int
     width: int
@@ -62,12 +62,16 @@ class FaceMutation:
     def add_face(
         self,
         place_id: strawberry.ID,
+        add_last: Boolean,
         new_face: FaceInput,
         info: Info,
     ) -> Face:
         with info.context["session"].begin():
             place = get_by_id(info, PlaceDb, place_id)
             new_db_face = FaceDb(**asdict(new_face))
+            f = max if add_last else min
+            order_index = f([p.order_index for p in place.faces], default=0)
+            new_db_face.order_index = order_index + (1 if add_last else -1)
             logging.info(f"adding face {new_db_face}")
             place.faces.append(new_db_face)
 
