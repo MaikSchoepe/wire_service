@@ -12,17 +12,40 @@ input AreaInput {
   description: String! = "AreaInput.description"
 }
 
-type Mutation {
-  addArea(newArea: AreaInput!): Area!
-  addPlace(areaId: ID!, newPlace: PlaceInput!): Place!
-}
-
-type Place {
+type Face {
+  placeId: ID!
   id: ID!
-  areaId: ID!
+  orderIndex: Int!
+  height: Int!
+  width: Int!
   name: String!
   shortName: String!
   description: String!
+  parentPlace: Place!
+}
+
+input FaceInput {
+  orderIndex: Int! = 0
+  shortName: String! = "FaceInput.short_name"
+  height: Int! = 100
+  width: Int! = 100
+  name: String! = "FaceInput.name"
+  description: String! = "FaceInput.description"
+}
+
+type Mutation {
+  addArea(newArea: AreaInput!): Area!
+  addPlace(areaId: ID!, newPlace: PlaceInput!): Place!
+  addFace(placeId: ID!, newFace: FaceInput!): Face!
+}
+
+type Place {
+  areaId: ID!
+  id: ID!
+  name: String!
+  shortName: String!
+  description: String!
+  parentArea: Area!
 }
 
 input PlaceInput {
@@ -36,4 +59,6 @@ type Query {
   area(id: ID!): Area!
   places: [Place!]!
   place(id: ID!): Place!
+  faces: [Face!]!
+  face(id: ID!): Face!
 }

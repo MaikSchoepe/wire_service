@@ -28,6 +28,15 @@
       "purpose": ["debug-test"],
       "console": "integratedTerminal",
       "justMyCode": false
+    },
+    {
+      "name": "Python: Build Schema",
+      "type": "python",
+      "request": "launch",
+      "module": "strawberry",
+      "args": ["export-schema", "wire_service.app:schema"],
+      "console": "integratedTerminal",
+      "justMyCode": false
     }
   ]
 }

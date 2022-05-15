@@ -7,8 +7,8 @@ from strawberry.types import Info
 from wire_service.db_model.basic_ops import get_by_id
 from wire_service.db_model.face import FaceDb
 from wire_service.db_model.place import PlaceDb
-from wire_service.service_model.wrapper import DbProxy
 from wire_service.service_model.session_extension import db_query
+from wire_service.service_model.wrapper import DbProxy
 
 if TYPE_CHECKING:
     from wire_service.service_model.place import Place
@@ -36,10 +36,10 @@ class Face(DbProxy):
 
 @strawberry.input
 class FaceInput(FaceDb):
-    order_index: int  # type: ignore
+    order_index: int = 0  # type: ignore
     short_name: str  # type: ignore
-    height: int  # type: ignore
-    width: int  # type: ignore
+    height: int = 100  # type: ignore
+    width: int = 100  # type: ignore
     name: str  # type: ignore
     description: str  # type: ignore
 
