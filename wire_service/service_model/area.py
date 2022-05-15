@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Any, List
 
 import strawberry
 from strawberry.types import Info
@@ -11,41 +11,43 @@ from wire_service.service_model.session_extension import db_query
 from .place import Place
 
 
+class DbProxy:
+    def __init__(self):
+        self._model = None
+
+    @classmethod
+    def wrap(cls, model: Any):
+        wrapper = object.__new__(cls)
+        wrapper._model = model
+        return wrapper
+
+    def __getattr__(self, attr):
+        result = getattr(self._model, attr)
+        if isinstance(result, list):
+            return list(map(DbProxy.wrap, result))
+
+        return result
+
+
 @strawberry.type
-class Area:
-    def __init__(self, model: AreaDb):
-        self._model = model
+class Area(DbProxy):
+    id: strawberry.ID
+    name: str
+    short_name: str
+    description: str
 
-    @strawberry.field
-    def id(self) -> strawberry.ID:
-        return strawberry.ID(str(self._model.id))
-
-    @strawberry.field
-    def name(self) -> str:
-        return self._model.name
-
-    @strawberry.field
-    def short_name(self) -> str:
-        return self._model.short_name
-
-    @strawberry.field
-    def description(self) -> str:
-        return self._model.description
-
-    @strawberry.field
-    def places(self) -> List[Place]:
-        return list(map(Place, self._model.places))
+    places: List[Place]
 
 
 @strawberry.type
 class AreaQuery:
     @strawberry.field
     def areas(self, info: Info) -> List[Area]:
-        return list(map(Area, db_query(info)(AreaDb)))
+        return list(map(Area.wrap, db_query(info)(AreaDb)))
 
     @strawberry.field
     def area(self, id: strawberry.ID, info: Info) -> Area:
-        return Area(get_by_id(info, AreaDb, id))
+        return Area.wrap(get_by_id(info, AreaDb, id))
 
 
 @strawberry.input
@@ -63,4 +65,4 @@ class AreaMutation:
         with s.begin():
             logging.info(f"adding area {new_area}")
             s.add(new_area)
-        return Area(new_area)
+        return Area.wrap(new_area)
