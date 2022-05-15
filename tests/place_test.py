@@ -60,13 +60,13 @@ class _TestPlaceHandler(_TestAreaHandler):
     async def last_place_data(self) -> dict:
         return {
             "areaId": await self.get_test_area_id(),
-            "shortName": f"TP{self.place_count}",
-            "name": f"Test Place {self.place_count}",
-            "description": f"This is sample place number {self.place_count}",
+            "shortName": f"TP{_TestPlaceHandler.place_count}",
+            "name": f"Test Place {_TestPlaceHandler.place_count}",
+            "description": f"This is sample place number {_TestPlaceHandler.place_count}",
         }
 
     async def create_place(self) -> dict:
-        self.place_count += 1
+        _TestPlaceHandler.place_count += 1
         result = await self._execute(CREATE_PLACE, await self.last_place_data())
         return result["addPlace"]
 
