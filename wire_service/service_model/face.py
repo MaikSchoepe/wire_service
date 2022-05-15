@@ -26,27 +26,27 @@ class Face:
 
     @strawberry.field
     def name(self) -> str:
-        return self._model.name or ""
+        return self._model.name
 
     @strawberry.field
     def order_index(self) -> int:
-        return self._model.order_index or 0
+        return self._model.order_index
 
     @strawberry.field
     def height(self) -> int:
-        return self._model.height or 0
+        return self._model.height
 
     @strawberry.field
     def width(self) -> int:
-        return self._model.width or 0
+        return self._model.width
 
     @strawberry.field
     def short_name(self) -> str:
-        return self._model.short_name or ""
+        return self._model.short_name
 
     @strawberry.field
     def description(self) -> str:
-        return self._model.description or ""
+        return self._model.description
 
     @strawberry.field
     def place_id(self) -> strawberry.ID:

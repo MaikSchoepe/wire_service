@@ -22,15 +22,15 @@ class Area:
 
     @strawberry.field
     def name(self) -> str:
-        return self._model.name or ""
+        return self._model.name
 
     @strawberry.field
     def short_name(self) -> str:
-        return self._model.short_name or ""
+        return self._model.short_name
 
     @strawberry.field
     def description(self) -> str:
-        return self._model.description or ""
+        return self._model.description
 
     @strawberry.field
     def places(self) -> List[Place]:

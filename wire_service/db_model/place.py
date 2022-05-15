@@ -11,11 +11,11 @@ class PlaceDb(Base):
 
     id = Column(Integer, primary_key=True)
 
-    short_name = Column(String(10), unique=True)
-    name = Column(String(128))
-    description = Column(UnicodeText)
+    short_name: str = Column(String(10), unique=True)
+    name: str = Column(String(128))
+    description: str = Column(UnicodeText)
 
-    area_id = Column(Integer, ForeignKey("areas.id"), nullable=False)
+    area_id: int = Column(Integer, ForeignKey("areas.id"), nullable=False)
 
     faces = relationship(
         FaceDb,
