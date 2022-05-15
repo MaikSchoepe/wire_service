@@ -44,7 +44,7 @@ class Place:
     def parent_area(
         self,
     ) -> Area:
-        return Area.resolve_type()(self._model.area)  # type: ignore
+        return Area.resolve_type().wrap(self._model.area)  # type: ignore
 
 
 @strawberry.input
