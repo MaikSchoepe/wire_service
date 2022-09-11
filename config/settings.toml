@@ -1,9 +1,10 @@
 [default]
 DB_USER = "postgres"
-DB_HOST = "localhost"
+DB_HOST = "192.168.66.23"
+DB_PORT = "30537"
 DB_NAME = "wiring"
 
-DB_PATH = "@format postgresql://{this.DB_USER}:{this.DB_PASS}@{this.DB_HOST}/{this.DB_NAME}"
+DB_PATH = "@format postgresql://{this.DB_USER}:{this.DB_PASS}@{this.DB_HOST}:{this.DB_PORT}/{this.DB_NAME}"
 
 [testing]
 DB_NAME = "wiring_unittest"
