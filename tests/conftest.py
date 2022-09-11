@@ -15,7 +15,7 @@ def set_test_settings():
 @pytest.fixture(scope="session", autouse=True)
 def ensure_db_exists(set_test_settings):
     con = psycopg2.connect(
-        f"dbname='postgres' user='{settings.DB_USER}' host='{settings.DB_HOST}' password='{settings.DB_PASS}'"
+        f"dbname='postgres' user='{settings.DB_USER}' host='{settings.DB_HOST}' port={settings.DB_PORT} password='{settings.DB_PASS}'"
     )
     con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
