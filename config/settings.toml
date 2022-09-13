@@ -8,3 +8,6 @@ DB_PATH = "@format postgresql://{this.DB_USER}:{this.DB_PASS}@{this.DB_HOST}:{th
 
 [testing]
 DB_NAME = "wiring_unittest"
+
+[sqlite_testing]
+DB_PATH = "sqlite:///db.sqlite3"
