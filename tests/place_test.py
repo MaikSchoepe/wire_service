@@ -1,121 +1,40 @@
 import pytest
 
-from tests.area_test import _TestAreaHandler
+import tests.gql_operations as ops
+from tests.sample_areas import get_sample_area
+from tests.sample_places import get_new_sample_place, get_place_count, get_sample_place
 from wire_service.app import schema
-
-CREATE_PLACE = """
-    mutation CreateTestPlace($areaId: ID!, $shortName: String!, $name: String!, $description: String!) {
-        addPlace(areaId: $areaId, newPlace: {shortName: $shortName, name: $name, description: $description}) {
-            areaId,
-            id,
-            shortName,
-            name,
-            description
-        }
-    }
-"""
-
-GET_PLACES = """
-    { places {
-        id
-    }}
-"""
-
-GET_PLACE = """
-    query GetPlace($id: ID!) {
-        place(id: $id) {
-            areaId,
-            name,
-            shortName,
-            description
-        }
-    }
-"""
-
-GET_PLACE_PARENT_NAME = """
-    query GetPlace($id: ID!) {
-        place(id: $id) {
-            parentArea {
-                name
-            }
-        }
-    }
-"""
-
-
-class _TestPlaceHandler(_TestAreaHandler):
-    place_count = 0
-
-    def __init__(self) -> None:
-        self._area_id = None
-        self.place_parent_name = None
-
-    async def get_test_area_id(self):
-        if not self._area_id:
-            result = await self.create_area()
-            self._area_id = result["id"]
-            self.place_parent_name = result["name"]
-        return self._area_id
-
-    async def last_place_data(self) -> dict:
-        return {
-            "areaId": await self.get_test_area_id(),
-            "shortName": f"TP{_TestPlaceHandler.place_count}",
-            "name": f"Test Place {_TestPlaceHandler.place_count}",
-            "description": f"This is sample place number {_TestPlaceHandler.place_count}",
-        }
-
-    async def create_place(self) -> dict:
-        _TestPlaceHandler.place_count += 1
-        result = await self._execute(CREATE_PLACE, await self.last_place_data())
-        return result["addPlace"]
-
-    async def get_place(self, **kwargs) -> dict:
-        return (await self._execute(GET_PLACE, kwargs))["place"]
-
-    async def get_places(self) -> dict:
-        return (await self._execute(GET_PLACES))["places"]
-
-    async def get_place_parent_id(self, **kwargs) -> dict:
-        data = await self._execute(GET_PLACE_PARENT_NAME, kwargs)
-        return data["place"]["parentArea"]["name"]
-
-
-TestPlaceHandler = _TestPlaceHandler()
 
 
 @pytest.mark.asyncio
 async def test_create_place():
-    result = await TestPlaceHandler.create_place()
+    place, data = await get_sample_place()
 
-    last_data = (await TestPlaceHandler.last_place_data()).items()
-    assert last_data <= result.items()  # all sent data is there (exclude the id)
+    assert place.items() >= data.items()
+    assert get_place_count() > 0
 
 
 @pytest.mark.asyncio
 async def test_get_places():
-    await TestPlaceHandler.create_place()
+    await get_new_sample_place()
+    result = await ops.execute_gql(ops.GET_PLACES)
 
-    result = await TestPlaceHandler.get_places()
-    assert len(result) == TestPlaceHandler.place_count
+    assert get_place_count() == len(result["places"])
 
 
 @pytest.mark.asyncio
 async def test_get_place_by_id():
-    result = await TestPlaceHandler.create_place()
-    sent_data = await TestPlaceHandler.last_place_data()
+    place, data = await get_sample_place()
+    place_id = place["id"]
+    result = await ops.execute_gql(ops.GET_PLACE, args={"id": place_id})
 
-    place_id = result["id"]
-
-    result = await TestPlaceHandler.get_place(id=place_id)
-
-    assert sent_data.items() <= result.items()
+    assert data.items() == result["place"].items()
 
 
 @pytest.mark.asyncio
 async def test_try_get_nonexistent_place():
     result = await schema.execute(
-        GET_PLACE,
+        ops.GET_PLACE,
         variable_values={"id": 666},
     )
 
@@ -124,13 +43,9 @@ async def test_try_get_nonexistent_place():
 
 @pytest.mark.asyncio
 async def test_get_place_parent_name():
-    result = await TestPlaceHandler.create_place()
+    place, _ = await get_sample_place()
+    area, _ = await get_sample_area()
 
-    parent_name = TestPlaceHandler.place_parent_name
-    place_id = result["id"]
-    assert parent_name
-    assert place_id
+    result = await ops.execute_gql(ops.GET_PLACE_PARENT_NAME, args={"id": place["id"]})
 
-    result = await TestPlaceHandler.get_place_parent_id(id=place_id)
-
-    assert result == parent_name
+    assert result["place"]["parentArea"]["name"] == area["name"]

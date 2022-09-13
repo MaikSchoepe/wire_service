@@ -1,66 +1,9 @@
 import pytest
 
-from tests.place_test import _TestPlaceHandler
+import tests.gql_operations as ops
+from tests.sample_faces import get_face_count, get_new_sample_face, get_sample_face
+from tests.sample_places import get_sample_place
 from wire_service.app import schema
-
-CREATE_FACE = """
-    mutation CreateTestFace(
-            $placeId: ID!,
-            $addLast: Boolean!,
-            $shortName: String!,
-            $name: String!,
-            $height: Int!,
-            $width: Int!,
-            $description: String!
-        ) {
-        addFace(placeId: $placeId, addLast: $addLast, newFace: {
-                shortName: $shortName,
-                name: $name,
-                height: $height,
-                width: $width,
-                description: $description
-            }) {
-                placeId,
-                id,
-                orderIndex,
-                shortName,
-                height,
-                width,
-                name,
-                description,
-            }
-    }
-"""
-
-GET_FACES = """
-    { faces {
-        id
-    }}
-"""
-
-GET_FACE = """
-    query GetFace($id: ID!) {
-        face(id: $id) {
-            placeId,
-            orderIndex,
-            name,
-            shortName,
-            height,
-            width,
-            description
-        }
-    }
-"""
-
-GET_FACE_PARENT_NAME = """
-    query GetFace($id: ID!) {
-        face(id: $id) {
-            parentPlace {
-                name
-            }
-        }
-    }
-"""
 
 IGNORED_KEYS = ["addLast", "orderIndex", "id"]
 
@@ -71,83 +14,80 @@ def dict_equals(d1, d2):
     )
 
 
-class _TestFaceHandler(_TestPlaceHandler):
-    face_count = 0
+# class _TestFaceHandler(_TestPlaceHandler):
+#     face_count = 0
 
-    def __init__(self) -> None:
-        super().__init__()
-        self._place_id = None
-        self.face_parent_name = None
+#     def __init__(self) -> None:
+#         super().__init__()
+#         self._face_id = None
+#         self.face_parent_name = None
 
-    async def get_test_place_id(self):
-        if not self._place_id:
-            result = await self.create_place()
-            self._place_id = result["id"]
-            self.face_parent_name = result["name"]
-        return self._place_id
+#     async def get_test_face_id(self):
+#         if not self._face_id:
+#             result = await self.create_face()
+#             self._face_id = result["id"]
+#             self.face_parent_name = result["name"]
+#         return self._face_id
 
-    async def last_face_data(self, add_last=True) -> dict:
-        return {
-            "placeId": await self.get_test_place_id(),
-            "addLast": add_last,
-            "shortName": f"TF{_TestFaceHandler.face_count}",
-            "name": f"Test Face {_TestFaceHandler.face_count}",
-            "height": _TestFaceHandler.face_count * 100,
-            "width": _TestFaceHandler.face_count * 200,
-            "description": f"This is sample face number {_TestFaceHandler.face_count}",
-        }
+#     async def last_face_data(self, add_last=True) -> dict:
+#         return {
+#             "faceId": await self.get_test_face_id(),
+#             "addLast": add_last,
+#             "shortName": f"TF{_TestFaceHandler.face_count}",
+#             "name": f"Test Face {_TestFaceHandler.face_count}",
+#             "height": _TestFaceHandler.face_count * 100,
+#             "width": _TestFaceHandler.face_count * 200,
+#             "description": f"This is sample face number {_TestFaceHandler.face_count}",
+#         }
 
-    async def create_face(self, add_last=True) -> dict:
-        _TestFaceHandler.face_count += 1
-        result = await self._execute(CREATE_FACE, await self.last_face_data(add_last))
-        return result["addFace"]
+#     async def create_face(self, add_last=True) -> dict:
+#         _TestFaceHandler.face_count += 1
+#         result = await self._execute(CREATE_FACE, await self.last_face_data(add_last))
+#         return result["addFace"]
 
-    async def get_face(self, **kwargs) -> dict:
-        return (await self._execute(GET_FACE, kwargs))["face"]
+#     async def get_face(self, **kwargs) -> dict:
+#         return (await self._execute(GET_FACE, kwargs))["face"]
 
-    async def get_faces(self) -> dict:
-        return (await self._execute(GET_FACES))["faces"]
+#     async def get_faces(self) -> dict:
+#         return (await self._execute(GET_FACES))["faces"]
 
-    async def get_face_parent_id(self, **kwargs) -> dict:
-        data = await self._execute(GET_FACE_PARENT_NAME, kwargs)
-        return data["face"]["parentPlace"]["name"]
+#     async def get_face_parent_id(self, **kwargs) -> dict:
+#         data = await self._execute(GET_FACE_PARENT_NAME, kwargs)
+#         return data["face"]["parentPlace"]["name"]
 
 
-TestFaceHandler = _TestFaceHandler()
+# TestFaceHandler = _TestFaceHandler()
 
 
 @pytest.mark.asyncio
 async def test_create_face():
-    result = await TestFaceHandler.create_face()
+    face, data = await get_sample_face()
 
-    last_data = await TestFaceHandler.last_face_data()
-    assert dict_equals(last_data, result)  # all sent data is there (exclude the id)
+    assert dict_equals(face, data)
+    assert get_face_count() > 0
 
 
 @pytest.mark.asyncio
 async def test_get_faces():
-    await TestFaceHandler.create_face()
+    await get_new_sample_face()
+    result = await ops.execute_gql(ops.GET_FACES)
 
-    result = await TestFaceHandler.get_faces()
-    assert len(result) == TestFaceHandler.face_count
+    assert get_face_count() == len(result["faces"])
 
 
 @pytest.mark.asyncio
 async def test_get_face_by_id():
-    result = await TestFaceHandler.create_face()
-    sent_data = await TestFaceHandler.last_face_data()
+    face, data = await get_sample_face()
+    face_id = face["id"]
+    result = await ops.execute_gql(ops.GET_FACE, args={"id": face_id})
 
-    face_id = result["id"]
-
-    result = await TestFaceHandler.get_face(id=face_id)
-
-    assert dict_equals(sent_data, result)
+    assert dict_equals(result["face"], data)
 
 
 @pytest.mark.asyncio
 async def test_try_get_nonexistent_face():
     result = await schema.execute(
-        GET_FACE,
+        ops.GET_FACE,
         variable_values={"id": 666},
     )
 
@@ -156,24 +96,20 @@ async def test_try_get_nonexistent_face():
 
 @pytest.mark.asyncio
 async def test_get_face_parent_name():
-    result = await TestFaceHandler.create_face()
+    face, _ = await get_sample_face()
+    place, _ = await get_sample_place()
 
-    parent_name = TestFaceHandler.face_parent_name
-    face_id = result["id"]
-    assert parent_name
-    assert face_id
+    result = await ops.execute_gql(ops.GET_FACE_PARENT_NAME, args={"id": face["id"]})
 
-    result = await TestFaceHandler.get_face_parent_id(id=face_id)
-
-    assert result == parent_name
+    assert result["face"]["parentPlace"]["name"] == place["name"]
 
 
 @pytest.mark.asyncio
 async def test_face_ordering():
-    face1 = await TestFaceHandler.create_face()
-    face2 = await TestFaceHandler.create_face(False)
-    face3 = await TestFaceHandler.create_face()
-    face4 = await TestFaceHandler.create_face(False)
+    face1, _ = await get_new_sample_face()
+    face2, _ = await get_new_sample_face(False)
+    face3, _ = await get_new_sample_face()
+    face4, _ = await get_new_sample_face(False)
 
     assert face1["orderIndex"] > face2["orderIndex"]
     assert face3["orderIndex"] > face1["orderIndex"]
