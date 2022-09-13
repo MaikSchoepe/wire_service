@@ -146,3 +146,55 @@ GET_FACE_PARENT_NAME = """
         }
     }
 """
+
+CREATE_OUTLET = """
+    mutation CreateTestOutlet(
+            $faceId: ID!,
+            $shortName: String!,
+            $name: String!,
+            $description: String!,
+            $kind: OutletKind!
+        ) {
+        addOutlet(faceId: $faceId, newOutlet: {
+                shortName: $shortName,
+                name: $name,
+                description: $description,
+                kind: $kind
+            }) {
+                faceId,
+                id,
+                name,
+                shortName,
+                description,
+                kind
+            }
+    }
+"""
+
+GET_OUTLETS = """
+    { outlets {
+        id
+    }}
+"""
+
+GET_OUTLET = """
+    query GetOutlet($id: ID!) {
+        outlet(id: $id) {
+            faceId,
+            name,
+            shortName,
+            description,
+            kind
+        }
+    }
+"""
+
+GET_OUTLET_PARENT_NAME = """
+    query GetOutlet($id: ID!) {
+        outlet(id: $id) {
+            parentFace {
+                name
+            }
+        }
+    }
+"""

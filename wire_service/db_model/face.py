@@ -6,6 +6,9 @@ from sqlalchemy import (
     UnicodeText,
     UniqueConstraint,
 )
+from sqlalchemy.orm import relationship
+
+from wire_service.db_model.outlet import OutletDb
 
 from .base import Base
 
@@ -24,6 +27,13 @@ class FaceDb(Base):
 
     place_id: int = Column(Integer, ForeignKey("places.id"), nullable=False)
 
+    outlets = relationship(
+        OutletDb,
+        backref="face",
+        cascade="all, delete-orphan",
+        uselist=True,
+        enable_typechecks=False,
+    )
     __table_args__ = (UniqueConstraint("place_id", "order_index"),)
 
     def __repr__(self):
