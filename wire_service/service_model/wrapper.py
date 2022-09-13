@@ -3,11 +3,11 @@ from typing import Any
 
 class DbProxy:
     def __init__(self):
-        self._model = None
+        self._model = None  # pragma: no cover
 
     @classmethod
     def wrap(cls, model: Any):
-        wrapper = object.__new__(cls)
+        wrapper = cls.__new__(cls)
         wrapper._model = model
         return wrapper
 

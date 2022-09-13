@@ -49,3 +49,13 @@ async def test_get_place_parent_name():
     result = await ops.execute_gql(ops.GET_PLACE_PARENT_NAME, args={"id": place["id"]})
 
     assert result["place"]["parentArea"]["name"] == area["name"]
+
+
+@pytest.mark.asyncio
+async def test_get_places_of_area():
+    place, _ = await get_sample_place()
+    area, _ = await get_sample_area()
+
+    result = await ops.execute_gql(ops.GET_PLACES_OF_AREA, args={"id": area["id"]})
+
+    assert place["id"] in [p["id"] for p in result["area"]["places"]]

@@ -77,6 +77,17 @@ GET_PLACE_PARENT_NAME = """
     }
 """
 
+GET_PLACES_OF_AREA = """
+    query GetPlacesOfArea($id: ID!) {
+        area(id: $id) {
+            places {
+                id
+            }
+        }
+    }
+"""
+
+
 CREATE_FACE = """
     mutation CreateTestFace(
             $placeId: ID!,

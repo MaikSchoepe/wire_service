@@ -10,17 +10,11 @@ from sqlalchemy import (
 from .base import Base
 
 
-def mydefault():
-    global i
-    i += 1
-    return i
-
-
 class FaceDb(Base):
     __tablename__ = "faces"
 
     id: int = Column(Integer, primary_key=True)
-    order_index: int = Column(Integer, nullable=False, default=mydefault)
+    order_index: int = Column(Integer, nullable=False)
 
     short_name: str = Column(String(10), unique=True)
     name: str = Column(String(128))

@@ -26,4 +26,6 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
-    uvicorn.run("wire_service.app:app", host="127.0.0.1", port=5000, log_level="info")
+    uvicorn.run(
+        "wire_service.app:app", host="127.0.0.1", port=5000, log_level="info"
+    )  # pragma: no cover
