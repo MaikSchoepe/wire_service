@@ -7,10 +7,21 @@ from wire_service.db_model.connection import DbConnection
 from wire_service.settings import settings
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--online",
+        action="store_true",
+        default=False,
+        help="custom option: test with online postgres DB",
+    )
+
+
 @pytest.fixture(scope="session", autouse=True)
-def set_test_settings():
-    settings.configure(FORCE_ENV_FOR_DYNACONF="sqlite_testing")
-    # settings.configure(FORCE_ENV_FOR_DYNACONF="testing")
+def set_test_settings(request):  #
+    if request.config.getoption("--online", default=False):
+        settings.configure(FORCE_ENV_FOR_DYNACONF="testing")
+    else:
+        settings.configure(FORCE_ENV_FOR_DYNACONF="sqlite_testing")
 
 
 @pytest.fixture(scope="session", autouse=True)
