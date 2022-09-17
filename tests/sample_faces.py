@@ -1,11 +1,9 @@
-from typing import List, Tuple
-
 import tests.gql_operations as ops
 from tests.sample_places import get_sample_place
 
-_face_data: List[dict] = []
+_face_data: list[dict] = []
 
-_faces: List[dict] = []
+_faces: list[dict] = []
 
 
 async def get_new_face_data(add_last: bool = True) -> dict:
@@ -24,13 +22,13 @@ async def get_new_face_data(add_last: bool = True) -> dict:
     return new_data
 
 
-async def get_new_sample_face(add_last: bool = True) -> Tuple[dict, dict]:
+async def get_new_sample_face(add_last: bool = True) -> tuple[dict, dict]:
     result = await ops.execute_gql(ops.CREATE_FACE, await get_new_face_data(add_last))
     _faces.append(result["addFace"])
     return _faces[-1], _face_data[-1]
 
 
-async def get_sample_face() -> Tuple[dict, dict]:
+async def get_sample_face() -> tuple[dict, dict]:
     if _faces:
         return _faces[-1], _face_data[-1]
     else:

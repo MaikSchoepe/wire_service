@@ -1,6 +1,5 @@
 import logging
 from dataclasses import asdict
-from typing import List
 
 import strawberry
 from strawberry.types import Info
@@ -19,13 +18,13 @@ class Area(DbProxy):
     short_name: str
     description: str
 
-    places: List[Place]
+    places: list[Place]
 
 
 @strawberry.type
 class AreaQuery:
     @strawberry.field
-    def areas(self, info: Info) -> List[Area]:
+    def areas(self, info: Info) -> list[Area]:
         return list(map(Area.wrap, db_query(info)(AreaDb)))
 
     @strawberry.field

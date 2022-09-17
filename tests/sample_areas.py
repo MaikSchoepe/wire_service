@@ -1,10 +1,8 @@
-from typing import List, Tuple
-
 import tests.gql_operations as ops
 
-_area_data: List[dict] = []
+_area_data: list[dict] = []
 
-_areas: List[dict] = []
+_areas: list[dict] = []
 
 
 def get_new_area_data() -> dict:
@@ -18,13 +16,13 @@ def get_new_area_data() -> dict:
     return new_data
 
 
-async def get_new_sample_area() -> Tuple[dict, dict]:
+async def get_new_sample_area() -> tuple[dict, dict]:
     result = await ops.execute_gql(ops.CREATE_AREA, get_new_area_data())
     _areas.append(result["addArea"])
     return _areas[-1], _area_data[-1]
 
 
-async def get_sample_area() -> Tuple[dict, dict]:
+async def get_sample_area() -> tuple[dict, dict]:
     if _areas:
         return _areas[-1], _area_data[-1]
     else:

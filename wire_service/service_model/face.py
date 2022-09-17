@@ -1,6 +1,6 @@
 import logging
 from dataclasses import asdict
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 from xmlrpc.client import Boolean
 
 import strawberry
@@ -48,7 +48,7 @@ class FaceInput:
 @strawberry.type
 class FaceQuery:
     @strawberry.field
-    def faces(self, info: Info) -> List[Face]:
+    def faces(self, info: Info) -> list[Face]:
         return list(map(Face.wrap, db_query(info)(FaceDb)))
 
     @strawberry.field

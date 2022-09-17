@@ -1,11 +1,9 @@
-from typing import List, Tuple
-
 import tests.gql_operations as ops
 from tests.sample_areas import get_sample_area
 
-_place_data: List[dict] = []
+_place_data: list[dict] = []
 
-_places: List[dict] = []
+_places: list[dict] = []
 
 
 async def get_new_place_data() -> dict:
@@ -21,13 +19,13 @@ async def get_new_place_data() -> dict:
     return new_data
 
 
-async def get_new_sample_place() -> Tuple[dict, dict]:
+async def get_new_sample_place() -> tuple[dict, dict]:
     result = await ops.execute_gql(ops.CREATE_PLACE, await get_new_place_data())
     _places.append(result["addPlace"])
     return _places[-1], _place_data[-1]
 
 
-async def get_sample_place() -> Tuple[dict, dict]:
+async def get_sample_place() -> tuple[dict, dict]:
     if _places:
         return _places[-1], _place_data[-1]
     else:

@@ -1,11 +1,9 @@
-from typing import List, Tuple
-
 import tests.gql_operations as ops
 from tests.sample_faces import get_sample_face
 
-_outlet_data: List[dict] = []
+_outlet_data: list[dict] = []
 
-_outlets: List[dict] = []
+_outlets: list[dict] = []
 
 
 async def get_new_outlet_data() -> dict:
@@ -22,13 +20,13 @@ async def get_new_outlet_data() -> dict:
     return new_data
 
 
-async def get_new_sample_outlet() -> Tuple[dict, dict]:
+async def get_new_sample_outlet() -> tuple[dict, dict]:
     result = await ops.execute_gql(ops.CREATE_OUTLET, await get_new_outlet_data())
     _outlets.append(result["addOutlet"])
     return _outlets[-1], _outlet_data[-1]
 
 
-async def get_sample_outlet() -> Tuple[dict, dict]:
+async def get_sample_outlet() -> tuple[dict, dict]:
     if _outlets:
         return _outlets[-1], _outlet_data[-1]
     else:

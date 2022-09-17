@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "wire_service"}]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 dynaconf = "^3.1.7"
 psycopg2-binary = "^2.9.3"
 strawberry-graphql = {extras = ["asgi"], version = "^0.103.9"}
@@ -32,7 +32,7 @@ build-backend = "poetry.core.masonry.api"
 plugins = "sqlalchemy.ext.mypy.plugin,strawberry.ext.mypy_plugin"
 files = "wire_service,alembic"
 ignore_missing_imports = true
-python_version = "3.8"
+python_version = "3.10"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
