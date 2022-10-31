@@ -4,7 +4,7 @@ from strawberry.types import Info
 
 from wire_service.service_model.session_extension import db_query
 
-from .base import Base
+from .model import Base
 
 
 def get_by_id(info: Info, db_class: Type[Base], id: str):

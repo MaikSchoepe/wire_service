@@ -3,8 +3,8 @@ import pytest
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from wire_service.configuration import config_wire_types
-from wire_service.persistency.base import Base
 from wire_service.persistency.connection import DbConnection
+from wire_service.persistency.model import Base
 from wire_service.settings import settings
 
 

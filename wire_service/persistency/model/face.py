@@ -8,9 +8,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from wire_service.persistency.outlet import OutletDb
-
-from .base import Base
+from . import Base
+from .outlet import OutletDb
 
 
 class FaceDb(Base):

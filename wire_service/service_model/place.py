@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING, List
 import strawberry
 from strawberry.types import Info
 
-from wire_service.persistency.area import AreaDb
 from wire_service.persistency.basic_ops import get_by_id
-from wire_service.persistency.place import PlaceDb
+from wire_service.persistency.model.area import AreaDb
+from wire_service.persistency.model.place import PlaceDb
 from wire_service.service_model.session_extension import db_query
 from wire_service.service_model.wrapper import DbProxy
 

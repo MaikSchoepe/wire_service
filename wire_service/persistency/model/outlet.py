@@ -2,7 +2,7 @@ from sqlalchemy import Column, Enum, ForeignKey, Integer, String, UnicodeText
 
 from wire_service.service_model.outlet_kind import OutletKind
 
-from .base import Base
+from . import Base
 
 
 class OutletDb(Base):

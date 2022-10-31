@@ -1,9 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, UnicodeText
 from sqlalchemy.orm import relationship
 
-from wire_service.persistency.face import FaceDb
-
-from .base import Base
+from . import Base
+from .face import FaceDb
 
 
 class PlaceDb(Base):

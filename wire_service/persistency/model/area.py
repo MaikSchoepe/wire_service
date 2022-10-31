@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, UnicodeText
 from sqlalchemy.orm import relationship
 
-from .base import Base
+from . import Base
 from .place import PlaceDb
 
 

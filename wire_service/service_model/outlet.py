@@ -6,8 +6,8 @@ import strawberry
 from strawberry.types import Info
 
 from wire_service.persistency.basic_ops import get_by_id
-from wire_service.persistency.face import FaceDb
-from wire_service.persistency.outlet import OutletDb
+from wire_service.persistency.model.face import FaceDb
+from wire_service.persistency.model.outlet import OutletDb
 from wire_service.service_model.outlet_kind import OutletKind
 from wire_service.service_model.session_extension import db_query
 from wire_service.service_model.wrapper import DbProxy

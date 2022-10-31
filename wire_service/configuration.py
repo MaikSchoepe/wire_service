@@ -1,5 +1,5 @@
-from wire_service.persistency.cable_type import CableTypeDb, WireDb
 from wire_service.persistency.connection import DbConnection
+from wire_service.persistency.model.cable_type import CableTypeDb, WireDb
 from wire_service.settings import load_cable_types
 
 

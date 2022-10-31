@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, UnicodeText
 from sqlalchemy.orm import relationship
 
-from .base import Base
+from . import Base
 
 
 class WireDb(Base):
