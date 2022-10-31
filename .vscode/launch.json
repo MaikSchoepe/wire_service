@@ -37,6 +37,15 @@
       "args": ["export-schema", "wire_service.app:schema"],
       "console": "integratedTerminal",
       "justMyCode": false
+    },
+    {
+      "name": "Alembic: Auto generate",
+      "type": "python",
+      "request": "launch",
+      "module": "alembic",
+      "args": ["revision", "--autogenerate"],
+      "console": "integratedTerminal",
+      "justMyCode": false
     }
   ]
 }
