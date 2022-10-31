@@ -3,7 +3,7 @@ from typing import Callable
 from strawberry.extensions import Extension
 from strawberry.types import Info
 
-from wire_service.db_model.connection import DbConnection
+from wire_service.persistency.connection import DbConnection
 
 
 class SessionExtension(Extension):

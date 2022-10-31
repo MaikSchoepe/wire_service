@@ -8,7 +8,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from wire_service.db_model.outlet import OutletDb
+from wire_service.persistency.outlet import OutletDb
 
 from .base import Base
 

@@ -4,8 +4,8 @@ from dataclasses import asdict
 import strawberry
 from strawberry.types import Info
 
-from wire_service.db_model.area import AreaDb
-from wire_service.db_model.basic_ops import get_by_id
+from wire_service.persistency.area import AreaDb
+from wire_service.persistency.basic_ops import get_by_id
 from wire_service.service_model.place import Place
 from wire_service.service_model.session_extension import db_query
 from wire_service.service_model.wrapper import DbProxy

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, UnicodeText
 from sqlalchemy.orm import relationship
 
-from wire_service.db_model.face import FaceDb
+from wire_service.persistency.face import FaceDb
 
 from .base import Base
 
