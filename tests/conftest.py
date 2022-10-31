@@ -2,6 +2,7 @@ import psycopg2
 import pytest
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+from wire_service.configuration import config_wire_types
 from wire_service.db_model.base import Base
 from wire_service.db_model.connection import DbConnection
 from wire_service.settings import settings
@@ -46,3 +47,4 @@ def ensure_db_exists(set_test_settings):
 
     Base.metadata.drop_all(DbConnection.engine)
     Base.metadata.create_all(DbConnection.engine)
+    config_wire_types()

@@ -4,6 +4,7 @@ from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.asgi import GraphQL
 
+from wire_service.configuration import config_wire_types
 from wire_service.service_model.mutation import Mutation
 from wire_service.service_model.query import Query
 from wire_service.service_model.session_extension import SessionExtension
@@ -25,7 +26,9 @@ app.add_middleware(
     allow_methods=["*"],
 )
 
+
 if __name__ == "__main__":
+    config_wire_types()
     uvicorn.run(
         "wire_service.app:app", host="127.0.0.1", port=5000, log_level="info"
     )  # pragma: no cover

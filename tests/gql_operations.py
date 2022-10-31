@@ -198,3 +198,16 @@ GET_OUTLET_PARENT_NAME = """
         }
     }
 """
+
+GET_CABLE_TYPES = """
+    { cableTypes {
+        id,
+        name,
+        description,
+        wires {
+            name,
+            color,
+            secondColor
+        }
+    }}
+"""

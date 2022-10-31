@@ -14,51 +14,6 @@ def dict_equals(d1, d2):
     )
 
 
-# class _TestFaceHandler(_TestPlaceHandler):
-#     face_count = 0
-
-#     def __init__(self) -> None:
-#         super().__init__()
-#         self._face_id = None
-#         self.face_parent_name = None
-
-#     async def get_test_face_id(self):
-#         if not self._face_id:
-#             result = await self.create_face()
-#             self._face_id = result["id"]
-#             self.face_parent_name = result["name"]
-#         return self._face_id
-
-#     async def last_face_data(self, add_last=True) -> dict:
-#         return {
-#             "faceId": await self.get_test_face_id(),
-#             "addLast": add_last,
-#             "shortName": f"TF{_TestFaceHandler.face_count}",
-#             "name": f"Test Face {_TestFaceHandler.face_count}",
-#             "height": _TestFaceHandler.face_count * 100,
-#             "width": _TestFaceHandler.face_count * 200,
-#             "description": f"This is sample face number {_TestFaceHandler.face_count}",
-#         }
-
-#     async def create_face(self, add_last=True) -> dict:
-#         _TestFaceHandler.face_count += 1
-#         result = await self._execute(CREATE_FACE, await self.last_face_data(add_last))
-#         return result["addFace"]
-
-#     async def get_face(self, **kwargs) -> dict:
-#         return (await self._execute(GET_FACE, kwargs))["face"]
-
-#     async def get_faces(self) -> dict:
-#         return (await self._execute(GET_FACES))["faces"]
-
-#     async def get_face_parent_id(self, **kwargs) -> dict:
-#         data = await self._execute(GET_FACE_PARENT_NAME, kwargs)
-#         return data["face"]["parentPlace"]["name"]
-
-
-# TestFaceHandler = _TestFaceHandler()
-
-
 @pytest.mark.asyncio
 async def test_create_face():
     face, data = await get_sample_face()
