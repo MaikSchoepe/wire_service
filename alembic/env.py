@@ -1,10 +1,28 @@
+import importlib
+import inspect
+import pkgutil
+import sys
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context
-from wire_service.persistency.base import Base
+from wire_service.persistency.model import Base
 from wire_service.settings import settings
+
+
+def import_models():
+    modelmodule = sys.modules["wire_service.persistency.model"]
+
+    for loader, module_name, is_pkg in pkgutil.iter_modules(
+        modelmodule.__path__, modelmodule.__name__ + "."
+    ):
+        module = importlib.import_module(module_name, loader.path)
+        for name, _object in inspect.getmembers(module, inspect.isclass):
+            globals()[name] = _object
+
+
+import_models()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
