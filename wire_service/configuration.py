@@ -1,5 +1,6 @@
 from wire_service.persistency.connection import DbConnection
 from wire_service.persistency.model.cable_type import CableTypeDb, WireDb
+from wire_service.service_model.cable_kind import CableKind
 from wire_service.settings import load_cable_types
 
 
@@ -12,7 +13,9 @@ def config_wire_types():
             )
             if cable_type_db is None:
                 new_cable_type = CableTypeDb(
-                    name=cable_type["name"], description=cable_type["description"]
+                    name=cable_type["name"],
+                    description=cable_type["description"],
+                    kind=CableKind[cable_type["kind"].upper()],
                 )
                 for wire in cable_type["wires"]:
                     new_cable_type.wires.append(WireDb(**wire))

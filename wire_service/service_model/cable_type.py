@@ -5,6 +5,7 @@ from strawberry.types import Info
 
 # from wire_service.persistency.basic_ops import get_by_id
 from wire_service.persistency.model.cable_type import CableTypeDb
+from wire_service.service_model.cable_kind import CableKind
 from wire_service.service_model.session_extension import db_query
 from wire_service.service_model.wrapper import DbProxy
 
@@ -21,6 +22,7 @@ class CableType(DbProxy):
     id: strawberry.ID
     name: str
     description: str
+    kind: CableKind
 
     wires: list[Wire]
 

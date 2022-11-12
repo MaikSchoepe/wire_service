@@ -2,6 +2,7 @@
     {
         "name": "NYM 3x1,5",
         "description": "",
+        "kind": "power",
         "wires": 
         [
             {"name": "PE", "color": "#00FF00", "second_color": "#FFFF00"},

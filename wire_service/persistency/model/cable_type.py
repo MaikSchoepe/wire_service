@@ -1,5 +1,7 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, UnicodeText
+from sqlalchemy import Column, Enum, ForeignKey, Integer, String, UnicodeText
 from sqlalchemy.orm import relationship
+
+from wire_service.service_model.cable_kind import CableKind
 
 from . import Base
 
@@ -25,6 +27,7 @@ class CableTypeDb(Base):
 
     name: str = Column(String(128), nullable=False)
     description: str = Column(UnicodeText, nullable=False)
+    kind: CableKind = Column(Enum(CableKind), nullable=False)
 
     wires = relationship(
         WireDb,
