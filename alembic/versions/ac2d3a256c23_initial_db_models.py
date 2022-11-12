@@ -1,7 +1,7 @@
 """initial db models
 
 Revision ID: ac2d3a256c23
-Revises: 
+Revises:
 Create Date: 2022-10-31 11:15:21.213638
 
 """

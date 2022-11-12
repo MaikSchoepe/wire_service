@@ -11,7 +11,7 @@ async def get_new_outlet_data() -> dict:
     count = len(_outlet_data)
     new_data = {
         "faceId": face["id"],
-        "shortName": f"TP{count}",
+        "shortName": f"TO{count}",
         "name": f"Test Outlet {count}",
         "description": f"This is sample outlet number {count}",
         "kind": "SINGLE",

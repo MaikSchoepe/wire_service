@@ -211,3 +211,36 @@ GET_CABLE_TYPES = """
         }
     }}
 """
+
+CREATE_CABLE = """
+    mutation CreateTestCable(
+            $cableTypeId: ID!,
+            $startOutletId: ID!,
+            $endOutletId: ID!,
+        ) {
+        addCable(cableTypeId: $cableTypeId,
+                 startOutletId: $startOutletId,
+                 endOutletId: $endOutletId) {
+                id,
+                cableTypeId,
+                startOutletId,
+                endOutletId
+            }
+    }
+"""
+
+GET_CABLES = """
+    { cables {
+        id
+    }}
+"""
+
+GET_CABLE = """
+    query GetCable($id: ID!) {
+        cable(id: $id) {
+            cableTypeId,
+            startOutletId,
+            endOutletId
+        }
+    }
+"""
