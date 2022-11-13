@@ -1,13 +1,172 @@
 [
     {
-        "name": "NYM 3x1,5",
+        "name": "NYM-J 3x1,5",
         "description": "",
         "kind": "power",
         "wires": 
         [
-            {"name": "PE", "color": "#00FF00", "second_color": "#FFFF00"},
-            {"name": "N", "color": "#0000FF"},
-            {"name": "L", "color": "#000000"}
+            {"name": "PE", "color": "#57A639", "second_color": "#F3DA0B"},
+            {"name": "N", "color": "#1B77BA"},
+            {"name": "L", "color": "#734222"}
+        ]
+    },
+    {
+        "name": "NYM-J 5x1,5",
+        "description": "",
+        "kind": "power",
+        "wires": 
+        [
+            {"name": "PE", "color": "#57A639", "second_color": "#F3DA0B"},
+            {"name": "N", "color": "#1B77BA"},
+            {"name": "L1", "color": "#0A0A0A"},
+            {"name": "L2", "color": "#734222"},
+            {"name": "L3", "color": "#78858B"}
+        ]
+    },
+    {
+        "name": "NYM-J 5x1,5 (alt)",
+        "description": "Alt: 2x scharz, 1x braun",
+        "kind": "power",
+        "wires": 
+        [
+            {"name": "PE", "color": "#57A639", "second_color": "#F3DA0B"},
+            {"name": "N", "color": "#1B77BA"},
+            {"name": "L1", "color": "#0A0A0A"},
+            {"name": "L2", "color": "#734222"},
+            {"name": "L3", "color": "#0A0A0A"}
+        ]
+    },
+    {
+        "name": "NYM-J 5x2,5",
+        "description": "",
+        "kind": "power",
+        "wires": 
+        [
+            {"name": "PE", "color": "#57A639", "second_color": "#F3DA0B"},
+            {"name": "N", "color": "#1B77BA"},
+            {"name": "L1", "color": "#0A0A0A"},
+            {"name": "L2", "color": "#734222"},
+            {"name": "L3", "color": "#78858B"}
+        ]
+    },
+    {
+        "name": "NYM-O 3x1,5",
+        "description": "",
+        "kind": "power",
+        "wires": 
+        [
+            {"name": "L1", "color": "#0A0A0A"},
+            {"name": "L2", "color": "#734222"},
+            {"name": "L3", "color": "#78858B"}
+        ]
+    },
+    {
+        "name": "NYM-O 4x1,5",
+        "description": "",
+        "kind": "power",
+        "wires": 
+        [
+            {"name": "N", "color": "#1B77BA"},
+            {"name": "L1", "color": "#0A0A0A"},
+            {"name": "L2", "color": "#734222"},
+            {"name": "L3", "color": "#78858B"}
+        ]
+    },
+    {
+        "name": "NYM-O 7x1,5",
+        "description": "",
+        "kind": "power",
+        "wires": 
+        [
+            {"name": "L1", "color": "#0A0A0A"},
+            {"name": "L2", "color": "#0A0A0A"},
+            {"name": "L3", "color": "#0A0A0A"},
+            {"name": "L4", "color": "#0A0A0A"},
+            {"name": "L5", "color": "#0A0A0A"},
+            {"name": "L6", "color": "#0A0A0A"},
+            {"name": "L7", "color": "#0A0A0A"}
+        ]
+    },
+    {
+        "name": "KNX",
+        "description": "",
+        "kind": "data",
+        "wires": 
+        [
+            {"name": "r", "color": "#AF2B1E"},
+            {"name": "s", "color": "#0A0A0A"},
+            {"name": "w", "color": "#EAE6CA"},
+            {"name": "g", "color": "#F3DA0B"}
+        ]
+    },
+    {
+        "name": "Reed",
+        "description": "",
+        "kind": "data",
+        "wires": 
+        [
+            {"name": "+", "color": "#78858B"},
+            {"name": "-", "color": "#78858B"},
+            {"name": "s+", "color": "#78858B"},
+            {"name": "s-", "color": "#78858B"}
+        ]
+    },
+    {
+        "name": "Brandmelde",
+        "description": "",
+        "kind": "data",
+        "wires": 
+        [
+            {"name": "r", "color": "#AF2B1E"},
+            {"name": "s", "color": "#0A0A0A"},
+            {"name": "w", "color": "#EAE6CA"},
+            {"name": "g", "color": "#F3DA0B"}
+        ]
+    },
+    {
+        "name": "CAT7",
+        "description": "",
+        "kind": "data",
+        "wires": 
+        [
+            {"name": "1", "color": "#EAE6CA", "second_color": "#FF7514"},
+            {"name": "2", "color": "#FF7514"},
+            {"name": "3", "color": "#EAE6CA", "second_color": "#57A639"},
+            {"name": "4", "color": "#1B77BA"},
+            {"name": "5", "color": "#EAE6CA", "second_color": "#1B77BA"},
+            {"name": "6", "color": "#57A639"},
+            {"name": "7", "color": "#EAE6CA", "second_color": "#734222"},
+            {"name": "8", "color": "#734222"}
+        ]
+    },
+    {
+        "name": "Audio",
+        "description": "",
+        "kind": "data",
+        "wires": 
+        [
+            {"name": "+", "color": "#EAE6CA"},
+            {"name": "-", "color": "#EAE6CA"}
+        ]
+    },
+    {
+        "name": "SAT",
+        "description": "",
+        "kind": "data",
+        "wires": 
+        [
+            {"name": "+", "color": "#EAE6CA"},
+            {"name": "-", "color": "#EAE6CA"}
+        ]
+    },
+    {
+        "name": "Telefon",
+        "description": "",
+        "kind": "data",
+        "wires": 
+        [
+            {"name": "+", "color": "#EAE6CA"},
+            {"name": "-", "color": "#EAE6CA"}
         ]
     }
 ]
