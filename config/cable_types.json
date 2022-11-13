@@ -11,6 +11,18 @@
         ]
     },
     {
+        "name": "NYM-J 4x1,5",
+        "description": "",
+        "kind": "power",
+        "wires": 
+        [
+            {"name": "PE", "color": "#57A639", "second_color": "#F3DA0B"},
+            {"name": "N", "color": "#1B77BA"},
+            {"name": "L1", "color": "#0A0A0A"},
+            {"name": "L2", "color": "#734222"}
+        ]
+    },
+    {
         "name": "NYM-J 5x1,5",
         "description": "",
         "kind": "power",
@@ -89,6 +101,18 @@
     },
     {
         "name": "KNX",
+        "description": "",
+        "kind": "data",
+        "wires": 
+        [
+            {"name": "r", "color": "#AF2B1E"},
+            {"name": "s", "color": "#0A0A0A"},
+            {"name": "w", "color": "#EAE6CA"},
+            {"name": "g", "color": "#F3DA0B"}
+        ]
+    },
+    {
+        "name": "1Wire",
         "description": "",
         "kind": "data",
         "wires": 

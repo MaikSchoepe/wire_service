@@ -9,7 +9,7 @@ from wire_service.settings import settings
 class _DbConnection:
     @cached_property
     def engine(self):
-        return create_engine(settings.DB_PATH, echo=True, future=True)
+        return create_engine(settings.DB_PATH, echo=settings.ECHO_SQL, future=True)
 
     @cached_property
     def Session(self):

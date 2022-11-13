@@ -6,6 +6,9 @@ DB_NAME = "wiring"
 
 DB_PATH = "@format postgresql://{this.DB_USER}:{this.DB_PASS}@{this.DB_HOST}:{this.DB_PORT}/{this.DB_NAME}"
 
+OLD_DB_PATH = "mysql+pymysql://root:t3st!ng@192.168.62.230:30965/luos_house_wiring"
+ECHO_SQL = false
+
 [testing]
 DB_NAME = "wiring_unittest"
 
